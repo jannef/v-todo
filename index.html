@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', function () {
+        new Vue({
+          el: '#app',
+          components: {
+            // Lisäkomponentit rekisteröidään tähän
+          },
+          data: {
+            // Muuttujat
+            todos: [],
+          },
+          methods: {
+            // Lisää asian listalle
+            addItem() {
+              const topic = prompt('Mitä pitää tehdä?')
+              if (topic) {
+                this.todos.push({ topic, completed: false })
+              }
+
+              this.persistItems()
+            },
+
+            // poistaa asian listalta
+            removeItem(index) {
+              this.todos.splice(index, 1)
+              this.todos = [...this.todos]
+
+              this.persistItems()
+            },
+
+            // luo indeksistä tunnisteen
+            idForIndex(index) {
+              if (index) {
+                return `item_${index}`
+              }
+
+              return 'item_x'
+            },
+
+            // muokkaa asiaa
+            editItem(index) {
+              const selected = this.todos[index]
+              if (selected) {
+                const topic = prompt(`Muokkaa asiaa: ${selected.topic}`, selected.topic)
+                if (topic) {
+                  selected.topic = topic
+                }
+              }
+
+              this.persistItems()
+            },
+
+            // Tallettaa tilan localStorageen
+            persistItems() {
+              localStorage.setItem('todo-state', JSON.stringify(this.todos))
+            }
+          },
+          mounted() {
+            // Yrittää lukea localStoragesta tallennetun tilan
+            const state = localStorage.getItem('todo-state')
+            console.log('state read from local storage', state)
+            if (state) {
+              this.todos = JSON.parse(state)
+            }
+          }
+        })
+      });
+    </script>
+
+    <style>
+      .todo {
+        width: calc(100% - 2rem);
+        text-align: left;
+        margin: 0 2rem;
+      }
+
+      .narrow {
+        width: 75px;
+        text-align: center;
+      }
+
+      input[type=checkbox] {
+        transform: scale(2);
+        margin-right: 1rem;
+      }
+
+      td:first-child {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
+    </style>
+
+    <title>Todo App</title>
+  </head>
+  <body>
+    <!-- Vuejs instanssi kiinnittyy tähän elementtiin ... el: '#app' -->
+    <div id="app">
+      <table class="todo" v-if="todos.length">
+        <caption><h1>Todo</h1></caption>
+        <tr>
+          <th>Asia</th>
+          <th class="narrow">Poista</th>
+        </tr>
+        <!-- muistilistan kohdat, silmukka -->
+        <tr v-for="(todo, i) in todos">
+          <td>
+            <span @click.alt="editItem(i)" class="full-size" :for="idForIndex(i)">
+              <!--
+                v-modelia ei saa sitoa suoraan v-for iteriaatiovariableen!
+                eli ei v-model="todo.status"
+              -->
+              <input type="checkbox" :id="idForIndex(i)" v-model="todos[i].status" />
+              {{todo.topic}}
+            </span>
+          </td>
+          <td class="narrow">
+            <button @click="removeItem(i)">X</button>
+          </td>
+        </tr>
+      </table>
+
+      <!-- Jos ei yhtään asiaa -->
+      <div v-else>
+        <h1>Ei vielä asioita!</h1>
+      </div>
+
+      <!-- button to add items to todo list! -->
+      <button @click="addItem">Lisää</button>
+    </div>
+  </body>
+</html>
