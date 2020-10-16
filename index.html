@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Vue.js -->
     <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.min.js"
+            integrity="sha384-5h4UG+6GOuV9qXh6HqOLwZMY4mnLPraeTrjT5v07o347pj6IkfuoASuGBhfDsp3d"
+            crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
+          integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK"
+          crossorigin="anonymous"
+    >
 
     <script type="text/javascript">
       document.addEventListener('DOMContentLoaded', function () {
@@ -27,10 +37,12 @@
 
             // poistaa asian listalta
             removeItem(index) {
-              this.todos.splice(index, 1)
-              this.todos = [...this.todos]
+              if (confirm("Haluatko varmasti poistaa asian?")) {
+                this.todos.splice(index, 1)
+                this.todos = [...this.todos]
 
-              this.persistItems()
+                this.persistItems()
+              }
             },
 
             // luo indeksistä tunnisteen
@@ -73,20 +85,8 @@
     </script>
 
     <style>
-      .todo {
-        width: calc(100% - 2rem);
-        text-align: left;
-        margin: 0 2rem;
-      }
-
-      .narrow {
-        width: 75px;
-        text-align: center;
-      }
-
       input[type=checkbox] {
-        transform: scale(2);
-        margin-right: 1rem;
+        transform: scale(1.5);
       }
 
       td:first-child {
@@ -99,30 +99,59 @@
   </head>
   <body>
     <!-- Vuejs instanssi kiinnittyy tähän elementtiin ... el: '#app' -->
-    <div id="app">
-      <table class="todo" v-if="todos.length">
-        <caption><h1>Todo</h1></caption>
-        <tr>
-          <th>Asia</th>
-          <th class="narrow">Poista</th>
-        </tr>
+    <div id="app"
+         class="container"
+    >
+      <div class="todo"
+           v-if="todos.length"
+      >
         <!-- muistilistan kohdat, silmukka -->
-        <tr v-for="(todo, i) in todos">
-          <td>
-            <span @click.alt="editItem(i)" class="full-size" :for="idForIndex(i)">
-              <!--
-                v-modelia ei saa sitoa suoraan v-for iteriaatiovariableen!
-                eli ei v-model="todo.status"
-              -->
-              <input type="checkbox" :id="idForIndex(i)" v-model="todos[i].status" />
+        <div v-for="(todo, i) in todos"
+            class="row mt-4 alert alert-success"
+        >
+          <div class="col my-auto">
+            <label class="full-size"
+                  :for="idForIndex(i)"
+                  class="form-check-label"
+            >
               {{todo.topic}}
-            </span>
-          </td>
-          <td class="narrow">
-            <button @click="removeItem(i)">X</button>
-          </td>
-        </tr>
-      </table>
+            </label>
+          </div>
+          <div class="col text-right">
+            <div class="btn-group">
+              <!--
+              v-modelia ei saa sitoa suoraan v-for iteriaatiovariableen!
+              eli ei v-model="todo.status"
+              -->
+              <button class="btn btn-primary">
+                <input type="checkbox"
+                  :id="idForIndex(i)"
+                  v-model="todos[i].status"
+                  class="form-check-input checkbox-green"
+                />
+              </button>
+              <button class="btn btn-primary"
+                      @click="editItem(i)"
+              >
+                <!-- edit button -->
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                </svg>
+              </button>
+              <button class="btn btn-danger"
+                      @click="removeItem(i)"
+              >
+                <!-- remove button -->
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- Jos ei yhtään asiaa -->
       <div v-else>
@@ -130,7 +159,10 @@
       </div>
 
       <!-- button to add items to todo list! -->
-      <button @click="addItem">Lisää</button>
+      <div class="row">
+        <button @click="addItem"
+                class="btn btn-primary">Lisää</button>
+      </div>
     </div>
   </body>
 </html>
