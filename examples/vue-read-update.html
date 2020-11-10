@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Ladataan vue.js käyttöliittymäkirjasto -->
+    <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+
+    <!-- Käynnistetään vue.js ohjelma -->
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', function () {
+        new Vue({
+          el: '#app',
+          // data, jota voidaan muuttaa ja näyttää käyttäjälle
+          data: {
+            teksti: 'Otsikko'
+          },
+          methods: {
+            // ohjelmakoodi, joka muuttaa dataa, kun nappia painetaan
+            muutaTeksti() {
+              this.teksti = 'muutettu'
+            }
+          }
+        })
+      });
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <!-- otsikko, johon data on sidottu, päivittäminen tehdään automaattisesti, kun data muuttuu -->
+      <h2><b>{{teksti}}</b></h2>
+
+      <!--
+        tekstikenttä, joka on sidottu muuttujaan teksti. Dataa päivitetään automaattisesti kun
+        kenttään kirjoitetaan. Tekstikentän sisältö muuttuu myös, jos data muuttuu
+       -->
+      <input v-model="teksti"></input>
+
+      <!-- nappi, joka ajaa methods-osiosta löytyvää ohjelmakoodia -->
+      <button @click="muutaTeksti">Muuta</button>
+    </div>
+  </body>
+</html>

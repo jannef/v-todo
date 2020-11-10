@@ -1,0 +1,26 @@
+<html>
+  <script>
+    // asettaa "kuuntelijan", joka ajaa koodia, kun käyttäjä
+    // kirjoittaa tekstikenttään
+    function onLoadFunction () {
+      // Etsi tekstikenttä
+      const kohde = document.querySelector('#tekstikentta')
+      // luo tekstikentälle kuuntelija
+      kohde.addEventListener('input', eventListenerFunction)
+    }
+
+    // koodi, jonka kuuntelija ajaa, kun tekstikenttään
+    // kirjoitetaan
+    function eventListenerFunction (eventParameter) {
+      // etsi otsikko, johon tulos halutaan päivittää
+      const result = document.querySelector('#kohde')
+      // Vaihda otsikon teksti
+      kohde.textContent = eventParameter.target.value
+    }
+  </script>
+
+  <body onload="onLoadFunction()">
+    <h1 id="kohde"><b>tämä vaihtuu</b></h1>
+    <input type="text" id="tekstikentta"></button>
+  </body>
+</html>
