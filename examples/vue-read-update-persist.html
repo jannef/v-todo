@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', function () {
+        new Vue({
+          el: '#app',
+          data: {
+            teksti: 'Otsikko'
+          },
+          methods: {
+            muutaTeksti() {
+              this.teksti = 'muutettu'
+            },
+
+
+            tallennaTeksti() {
+              // tallentaa teksti-datan selaimen muistiin
+              localStorage.setItem('tila-esimerkki', this.teksti)
+            }
+          },
+          // ohjelmakoodi, joka ajetaan, kun ohjelma käynnistyy
+          created() {
+            // lukee selaimen muistista tallennetun tekstin
+            const tila = localStorage.getItem('tila-esimerkki')
+
+            // jos tallennettu teksti löytyi, asetetaan se
+            // teksti-muuttujaan
+            if (tila) {
+              this.teksti = tila
+            }
+          },
+        })
+      });
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <h2><b>{{teksti}}</b></h2>
+      <input
+        v-model="teksti"
+        @input="tallennaTeksti"
+      ></input>
+      <button @click="muutaTeksti">Muuta</button>
+    </div>
+  </body>
+</html>
